@@ -1,0 +1,10 @@
+api_version = "2026-07"
+uid = "08d32793-056a-10d7-291d-ac0a4eb7192290fd9dc9"
+
+[[extensions]]
+type = "theme"
+name = "Notify Me Button"
+handle = "notify-me-button"
+
+  [[extensions.targeting]]
+  target = "section"

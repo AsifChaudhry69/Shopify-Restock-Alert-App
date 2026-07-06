@@ -1,0 +1,236 @@
+{% if product.available == false %}
+
+<div id="notify-me-wrapper" style="margin: 16px 0;">
+
+  <!-- Bell Icon Button -->
+  <div id="notify-bell-btn" onclick="openNotifyPopup()" style="
+    background: #000;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  ">
+    🔔
+  </div>
+
+  <!-- Overlay -->
+  <div id="notify-overlay" onclick="closeNotifyPopup()" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+  "></div>
+
+  <!-- Popup -->
+  <div id="notify-popup" style="
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 9999;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    font-family: Arial, sans-serif;
+  ">
+    <!-- Close X -->
+    <button onclick="closeNotifyPopup()" style="
+      position: absolute;
+      top: 12px; right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    ">✕</button>
+
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div style="font-size: 40px; margin-bottom: 8px;">🔔</div>
+      <h3 style="margin: 0; font-size: 18px; color: #111;">Notify Me When Available</h3>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #666;">
+        Enter your email and we'll let you know when <strong>{{ product.title }}</strong> is back in stock.
+      </p>
+    </div>
+
+    <!-- Email Input -->
+    <input
+      type="email"
+      id="notify-email"
+      placeholder="your@email.com"
+      style="
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+      "
+      onkeypress="if(event.key==='Enter') saveNotify()"
+    />
+
+    <!-- Error Message -->
+    <div id="notify-error" style="
+      display: none;
+      color: red;
+      font-size: 12px;
+      margin-bottom: 8px;
+    ">❌ Something went wrong. Please try again.</div>
+
+    <!-- Buttons Row -->
+    <div style="display: flex; gap: 10px;">
+      <button onclick="closeNotifyPopup()" style="
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+        color: #333;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 600;
+      ">Cancel</button>
+
+      <button id="notify-save-btn" onclick="saveNotify()" style="
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #f97316;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 600;
+      ">Notify Me</button>
+    </div>
+  </div>
+
+  <!-- Success Popup -->
+  <div id="notify-success-popup" style="
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 9999;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    font-family: Arial, sans-serif;
+    text-align: center;
+  ">
+    <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+    <h3 style="margin: 0 0 8px; color: #111;">You're on the list!</h3>
+    <p style="color: #666; font-size: 14px;">
+      We'll email you at <strong id="confirmed-email"></strong> when it's back in stock.
+    </p>
+    <button onclick="closeSuccessPopup()" style="
+      margin-top: 20px;
+      padding: 12px 32px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    ">Done</button>
+  </div>
+
+</div>
+
+<script>
+function openNotifyPopup() {
+  document.getElementById('notify-overlay').style.display = 'block';
+  document.getElementById('notify-popup').style.display = 'block';
+  document.getElementById('notify-email').focus();
+}
+
+function closeNotifyPopup() {
+  document.getElementById('notify-overlay').style.display = 'none';
+  document.getElementById('notify-popup').style.display = 'none';
+  document.getElementById('notify-error').style.display = 'none';
+  document.getElementById('notify-email').value = '';
+}
+
+function closeSuccessPopup() {
+  document.getElementById('notify-overlay').style.display = 'none';
+  document.getElementById('notify-success-popup').style.display = 'none';
+}
+
+async function saveNotify() {
+  var email = document.getElementById('notify-email').value.trim();
+
+
+  if (!email || email.indexOf('@') === -1) {
+    alert('Please enter a valid email address');
+    return;
+  }
+
+  var btn = document.getElementById('notify-save-btn');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  try {
+    var response = await fetch("https://pleasant-cover-implications-businesses.trycloudflare.com/api/subscribe", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        productId: '{{ product.id }}',
+        variantId: '{{ product.selected_or_first_available_variant.id }}',
+        shop: '{{ shop.permanent_domain }}',
+        productTitle: '{{ product.title }}',
+        productUrl: '{{ shop.url }}/products/{{ product.handle }}',
+        storeName: '{{ shop.name }}'
+      })
+    });
+
+    if (response.ok) {
+      document.getElementById('notify-popup').style.display = 'none';
+      document.getElementById('confirmed-email').textContent = email;
+      document.getElementById('notify-success-popup').style.display = 'block';
+      document.getElementById('notify-bell-btn').style.background = '#22c55e';
+    } else {
+      document.getElementById('notify-error').style.display = 'block';
+      btn.textContent = 'Notify Me';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    document.getElementById('notify-error').style.display = 'block';
+    btn.textContent = 'Notify Me';
+    btn.disabled = false;
+  }
+}
+</script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Notify Me Button",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "app_url",
+      "label": "App URL",
+      "default": " https://pleasant-cover-implications-businesses.trycloudflare.com"
+    }
+  ]
+}
+{% endschema %}

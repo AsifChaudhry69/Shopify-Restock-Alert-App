@@ -1,0 +1,30 @@
+client_id = "9da6416bf8c6c36714fffd8cfc16c023"
+name = "restock-app"
+application_url = "https://montgomery-damages-patient-jane.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-07"
+
+  [[webhooks.subscriptions]]
+  topics = ["inventory_levels/update"]
+  uri = "/webhooks/inventory"
+
+  [[webhooks.subscriptions]]
+  topics = ["app/uninstalled"]
+  uri = "/webhooks/app/uninstalled"
+
+[access_scopes]
+scopes = "read_products,write_products,read_inventory,write_inventory,read_customers,write_customers,write_metaobjects,write_metaobject_definitions"
+
+[auth]
+redirect_urls = [ "https://montgomery-damages-patient-jane.trycloudflare.com/auth/callback" ]
+
+[[extensions]]
+type = "theme"
+name = "notify-me-button"
+handle = "notify-me-button"
+uid = "08d32793-056a-10d7-291d-ac0a4eb7192290fd9dc9"

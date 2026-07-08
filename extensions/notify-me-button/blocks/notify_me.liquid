@@ -1,21 +1,23 @@
 {% if product.available == false %}
 
+{% assign app_url = section.settings.app_url %}
+
 <div id="notify-me-wrapper" style="margin: 16px 0;">
 
   <!-- Bell Icon Button -->
   <div id="notify-bell-btn" onclick="openNotifyPopup()" style="
-    background: #000;
-    width: 48px;
-    height: 48px;
+    background: {{ section.settings.bell_bg_color }};
+    width: {{ section.settings.bell_size }}px;
+    height: {{ section.settings.bell_size }}px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 22px;
+    font-size: {{ section.settings.bell_icon_size }}px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   ">
-    🔔
+    {{ section.settings.bell_icon }}
   </div>
 
   <!-- Overlay -->
@@ -34,14 +36,14 @@
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
-    border-radius: 16px;
+    background: {{ section.settings.popup_bg_color }};
+    border-radius: {{ section.settings.popup_border_radius }}px;
     padding: 32px;
     width: 90%;
     max-width: 400px;
     z-index: 9999;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    font-family: Arial, sans-serif;
+    font-family: {{ section.settings.font_family }};
   ">
     <!-- Close X -->
     <button onclick="closeNotifyPopup()" style="
@@ -56,10 +58,20 @@
 
     <!-- Header -->
     <div style="text-align: center; margin-bottom: 20px;">
-      <div style="font-size: 40px; margin-bottom: 8px;">🔔</div>
-      <h3 style="margin: 0; font-size: 18px; color: #111;">Notify Me When Available</h3>
-      <p style="margin: 8px 0 0; font-size: 13px; color: #666;">
-        Enter your email and we'll let you know when <strong>{{ product.title }}</strong> is back in stock.
+      <div style="font-size: 40px; margin-bottom: 8px;">{{ section.settings.bell_icon }}</div>
+      <h3 style="
+        margin: 0;
+        font-size: {{ section.settings.title_size }}px;
+        color: {{ section.settings.title_color }};
+        font-weight: {{ section.settings.title_weight }};
+        font-family: {{ section.settings.font_family }};
+      ">{{ section.settings.popup_title }}</h3>
+      <p style="
+        margin: 8px 0 0;
+        font-size: {{ section.settings.subtitle_size }}px;
+        color: {{ section.settings.subtitle_color }};
+      ">
+        {{ section.settings.popup_subtitle }} <strong>{{ product.title }}</strong>
       </p>
     </div>
 
@@ -67,16 +79,19 @@
     <input
       type="email"
       id="notify-email"
-      placeholder="your@email.com"
+      placeholder="{{ section.settings.input_placeholder }}"
       style="
         width: 100%;
         padding: 12px 16px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
+        border: 2px solid {{ section.settings.input_border_color }};
+        border-radius: {{ section.settings.input_border_radius }}px;
+        font-size: {{ section.settings.input_font_size }}px;
         outline: none;
         box-sizing: border-box;
         margin-bottom: 12px;
+        background: {{ section.settings.input_bg_color }};
+        color: {{ section.settings.input_text_color }};
+        font-family: {{ section.settings.font_family }};
       "
       onkeypress="if(event.key==='Enter') saveNotify()"
     />
@@ -87,33 +102,35 @@
       color: red;
       font-size: 12px;
       margin-bottom: 8px;
-    ">❌ Something went wrong. Please try again.</div>
+    ">{{ section.settings.error_text }}</div>
 
     <!-- Buttons Row -->
     <div style="display: flex; gap: 10px;">
       <button onclick="closeNotifyPopup()" style="
         flex: 1;
         padding: 12px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        background: #fff;
-        color: #333;
-        font-size: 14px;
+        border: 2px solid {{ section.settings.cancel_border_color }};
+        border-radius: {{ section.settings.btn_border_radius }}px;
+        background: {{ section.settings.cancel_bg_color }};
+        color: {{ section.settings.cancel_text_color }};
+        font-size: {{ section.settings.btn_font_size }}px;
         cursor: pointer;
         font-weight: 600;
-      ">Cancel</button>
+        font-family: {{ section.settings.font_family }};
+      ">{{ section.settings.cancel_btn_text }}</button>
 
       <button id="notify-save-btn" onclick="saveNotify()" style="
         flex: 1;
         padding: 12px;
         border: none;
-        border-radius: 8px;
-        background: #f97316;
-        color: #fff;
-        font-size: 14px;
+        border-radius: {{ section.settings.btn_border_radius }}px;
+        background: {{ section.settings.save_btn_bg_color }};
+        color: {{ section.settings.save_btn_text_color }};
+        font-size: {{ section.settings.btn_font_size }}px;
         cursor: pointer;
         font-weight: 600;
-      ">Notify Me</button>
+        font-family: {{ section.settings.font_family }};
+      ">{{ section.settings.save_btn_text }}</button>
     </div>
   </div>
 
@@ -123,32 +140,41 @@
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
-    border-radius: 16px;
+    background: {{ section.settings.popup_bg_color }};
+    border-radius: {{ section.settings.popup_border_radius }}px;
     padding: 32px;
     width: 90%;
     max-width: 400px;
     z-index: 9999;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    font-family: Arial, sans-serif;
+    font-family: {{ section.settings.font_family }};
     text-align: center;
   ">
     <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
-    <h3 style="margin: 0 0 8px; color: #111;">You're on the list!</h3>
-    <p style="color: #666; font-size: 14px;">
-      We'll email you at <strong id="confirmed-email"></strong> when it's back in stock.
+    <h3 style="
+      margin: 0 0 8px;
+      color: {{ section.settings.title_color }};
+      font-size: {{ section.settings.title_size }}px;
+      font-weight: {{ section.settings.title_weight }};
+    ">{{ section.settings.success_title }}</h3>
+    <p style="
+      color: {{ section.settings.subtitle_color }};
+      font-size: {{ section.settings.subtitle_size }}px;
+    ">
+      {{ section.settings.success_message }} <strong id="confirmed-email"></strong>
     </p>
     <button onclick="closeSuccessPopup()" style="
       margin-top: 20px;
       padding: 12px 32px;
-      background: #000;
-      color: #fff;
+      background: {{ section.settings.save_btn_bg_color }};
+      color: {{ section.settings.save_btn_text_color }};
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: {{ section.settings.btn_border_radius }}px;
+      font-size: {{ section.settings.btn_font_size }}px;
       cursor: pointer;
       font-weight: 600;
-    ">Done</button>
+      font-family: {{ section.settings.font_family }};
+    ">{{ section.settings.done_btn_text }}</button>
   </div>
 
 </div>
@@ -174,7 +200,7 @@ function closeSuccessPopup() {
 
 async function saveNotify() {
   var email = document.getElementById('notify-email').value.trim();
-
+  var appUrl = {{ section.settings.app_url | json }};
 
   if (!email || email.indexOf('@') === -1) {
     alert('Please enter a valid email address');
@@ -186,7 +212,7 @@ async function saveNotify() {
   btn.disabled = true;
 
   try {
-    var response = await fetch("https://pleasant-cover-implications-businesses.trycloudflare.com/api/subscribe", {
+    var response = await fetch(appUrl + '/api/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -204,15 +230,15 @@ async function saveNotify() {
       document.getElementById('notify-popup').style.display = 'none';
       document.getElementById('confirmed-email').textContent = email;
       document.getElementById('notify-success-popup').style.display = 'block';
-      document.getElementById('notify-bell-btn').style.background = '#22c55e';
+      document.getElementById('notify-bell-btn').style.background = '{{ section.settings.success_bell_color }}';
     } else {
       document.getElementById('notify-error').style.display = 'block';
-      btn.textContent = 'Notify Me';
+      btn.textContent = {{ section.settings.save_btn_text | json }};
       btn.disabled = false;
     }
   } catch (err) {
     document.getElementById('notify-error').style.display = 'block';
-    btn.textContent = 'Notify Me';
+    btn.textContent = {{ section.settings.save_btn_text | json }};
     btn.disabled = false;
   }
 }
@@ -226,10 +252,295 @@ async function saveNotify() {
   "target": "section",
   "settings": [
     {
+      "type": "header",
+      "content": "⚙️ App Settings"
+    },
+    {
       "type": "text",
       "id": "app_url",
       "label": "App URL",
-      "default": " https://pleasant-cover-implications-businesses.trycloudflare.com"
+      "default": "https://newfoundland-stud-exploring-rid.trycloudflare.com"
+    },
+    {
+      "type": "header",
+      "content": "🔔 Bell Icon"
+    },
+    {
+      "type": "text",
+      "id": "bell_icon",
+      "label": "Bell Icon (emoji or text)",
+      "default": "🔔"
+    },
+    {
+      "type": "range",
+      "id": "bell_size",
+      "label": "Bell Button Size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "bell_icon_size",
+      "label": "Bell Icon Size",
+      "min": 14,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "bell_bg_color",
+      "label": "Bell Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "success_bell_color",
+      "label": "Bell Color After Subscribe",
+      "default": "#22c55e"
+    },
+    {
+      "type": "header",
+      "content": "🪟 Popup"
+    },
+    {
+      "type": "color",
+      "id": "popup_bg_color",
+      "label": "Popup Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "popup_border_radius",
+      "label": "Popup Border Radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "font_family",
+      "label": "Font Family",
+      "options": [
+        { "value": "Arial, sans-serif", "label": "Arial" },
+        { "value": "Georgia, serif", "label": "Georgia" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" },
+        { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+        { "value": "'Trebuchet MS', sans-serif", "label": "Trebuchet MS" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" }
+      ],
+      "default": "Arial, sans-serif"
+    },
+    {
+      "type": "header",
+      "content": "📝 Title & Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "popup_title",
+      "label": "Popup Title",
+      "default": "Notify Me When Available"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title Font Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#111111"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title Font Weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "bold", "label": "Bold" }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "text",
+      "id": "popup_subtitle",
+      "label": "Popup Subtitle",
+      "default": "Enter your email and we'll let you know when"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle Font Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "📧 Email Input"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Placeholder Text",
+      "default": "your@email.com"
+    },
+    {
+      "type": "range",
+      "id": "input_font_size",
+      "label": "Input Font Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input Border Color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Input Border Radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "input_bg_color",
+      "label": "Input Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_text_color",
+      "label": "Input Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "🔘 Buttons"
+    },
+    {
+      "type": "range",
+      "id": "btn_font_size",
+      "label": "Button Font Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "btn_border_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "cancel_btn_text",
+      "label": "Cancel Button Text",
+      "default": "Cancel"
+    },
+    {
+      "type": "color",
+      "id": "cancel_bg_color",
+      "label": "Cancel Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cancel_text_color",
+      "label": "Cancel Button Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "cancel_border_color",
+      "label": "Cancel Button Border Color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "text",
+      "id": "save_btn_text",
+      "label": "Notify Button Text",
+      "default": "Notify Me"
+    },
+    {
+      "type": "color",
+      "id": "save_btn_bg_color",
+      "label": "Notify Button Background",
+      "default": "#f97316"
+    },
+    {
+      "type": "color",
+      "id": "save_btn_text_color",
+      "label": "Notify Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "✅ Success Popup"
+    },
+    {
+      "type": "text",
+      "id": "success_title",
+      "label": "Success Title",
+      "default": "You're on the list!"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success Message",
+      "default": "We'll email you at"
+    },
+    {
+      "type": "text",
+      "id": "done_btn_text",
+      "label": "Done Button Text",
+      "default": "Done"
+    },
+    {
+      "type": "header",
+      "content": "⚠️ Error"
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Error Message",
+      "default": "❌ Something went wrong. Please try again."
     }
   ]
 }
